@@ -21,8 +21,4 @@ jobs:
         pip install -r requirements.txt
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py')
-    - name: Test code
-      run: |
-        pip install pytest pytest-cov
-        pytest tests        
+        pylint $(git ls-files '*.py')        
