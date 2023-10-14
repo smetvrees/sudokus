@@ -8,7 +8,7 @@ from tests.puzzles import PuzzleTest
 class TestRecursiveSolver(unittest.TestCase):
     """Test class for recursive solve"""
     def test_can_place(self):
-        """Test if can place returns booleans properly"""
+        """Test if can_place returns booleans properly"""
         puzzle = PuzzleTest(3)
 
         assert can_place(puzzle.board, 9, 0, 1, 2) is False  # Check column
