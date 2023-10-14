@@ -1,25 +1,30 @@
+"""This module contains functions to recursively solve"""
+
 import copy
 import math
 
 from lib.puzzle import Puzzle
 
-"""Contains the recursive solver"""
-
 
 def solve(puzzle: Puzzle, count_unique_solutions: bool = False) -> Puzzle:
     """Main function to call the recursive solver
     :param Puzzle puzzle: the puzzle that is solved
-    :param bool count_unique_solutions: if True, fills information about the solution in the Puzzle object"""
+    :param bool count_unique_solutions:
+        if True, fills information about the solution in the Puzzle object
+    """
     grid = copy.deepcopy(puzzle.board)
     if count_unique_solutions:
         count = [0]
-        _can_solve = recursive_solve(grid, 0, 0, size=puzzle.base_size**2, solution_count=count)
+        _can_solve = recursive_solve(
+            grid, 0, 0, size=puzzle.base_size**2, solution_count=count
+        )
         puzzle.unique_solutions = count[0]
     _can_solve = recursive_solve(grid, 0, 0, size=puzzle.base_size**2)
     return grid
 
 
 def recursive_solve(grid, row, column, size, solution_count: [int] = None) -> bool:
+    """Recursively solve the grid"""
     # Check if we finished backtracking
     if row == size - 1 and column == size:
         if solution_count:
@@ -44,12 +49,11 @@ def recursive_solve(grid, row, column, size, solution_count: [int] = None) -> bo
 
             # Iterate next column
             if recursive_solve(grid, row, column + 1, size, solution_count):
-                # If solution_count is given, don't return True but reset value and iterate next column
+                # If solution_count is given, don't return True but reset value
                 if solution_count:
                     grid[row][column] = 0
                     continue
-                else:
-                    return True
+                return True
 
         # Placement failed; remove value and return
         grid[row][column] = 0

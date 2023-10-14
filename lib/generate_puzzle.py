@@ -1,19 +1,19 @@
+"""This module contains functions to generate functions"""
 import random
-from tqdm import tqdm
-from typing import List
 from copy import deepcopy
+from typing import List
 
-from lib.recursive_solver import recursive_solve, solve
+from tqdm import tqdm
 
 from lib.puzzle import Puzzle
-
-"""Contains functions to generate and fill the base class Puzzle"""
+from lib.recursive_solver import recursive_solve
 
 
 def generate_puzzles(amount: int, base: int) -> List[Puzzle]:
+    """Generates an 'amount' of puzzles with a 'base' size"""
     output_puzzles = []
     if 1 < base < 6:
-        for i in tqdm(range(amount)):
+        for _i in tqdm(range(amount)):
             puzzle = Puzzle(base)
             puzzle.solution = generate_full_puzzle(base)
             puzzle.board = empty_board(puzzle)
@@ -22,7 +22,8 @@ def generate_puzzles(amount: int, base: int) -> List[Puzzle]:
 
 
 def generate_full_puzzle(base: int) -> List[List[int]]:
-    """A funtion that with a given base (size of a box) creates a filled board of size [base**2 x base**2]"""
+    """A funtion that with a given base (size of a box)
+     creates a filled board of size [base**2 x base**2]"""
     # Based on https://stackoverflow.com/questions/45471152/how-to-create-a-sudoku-puzzle-in-python
     size = base * base
 
@@ -47,10 +48,13 @@ def empty_board(puzzle: Puzzle) -> List[List[int]]:
     """Function that will randomly pick values in a board and continues until no solution"""
     grid = deepcopy(puzzle.solution)
     size = puzzle.base_size**2
-    i = 0
+
+    # Start looping
     while True:
         test_count = [0]
-        recursive_solve(deepcopy(grid), row=0, column=0, size=size, solution_count=test_count)
+        recursive_solve(
+            deepcopy(grid), row=0, column=0, size=size, solution_count=test_count
+        )
 
         if test_count[0] != 1:
             break
@@ -89,7 +93,8 @@ def validate_full_grid(puzzle: Puzzle) -> bool:
 
     return True
 
+
 if __name__ == "__main__":
     puzzles = generate_puzzles(amount=1, base=2)
-    #print(puzzles[0].solution)
-    #print(puzzles[0].board)
+    # print(puzzles[0].solution)
+    # print(puzzles[0].board)
