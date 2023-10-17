@@ -1,6 +1,7 @@
 """Test module for the recursive solver"""
 import unittest
 
+from lib.generate_puzzle import validate_full_grid
 from lib.recursive_solver import recursive_solve, solve, can_place
 from tests.puzzles import PuzzleTest
 
@@ -16,13 +17,12 @@ class TestRecursiveSolver(unittest.TestCase):
         assert can_place(puzzle.board, 9, 3, 3, 7) is True  # Check all
         assert can_place(puzzle.board, 9, 8, 8, 3) is False  # Check row
 
-    def test_solutions(self):
-        """Test if this puzzle has 1 unique solution"""
-        for base in [2, 3, 4]:
+    def test_solve(self):
+        """Test if this puzzle can be solved"""
+        for base in [2, 3, 4, 5]:
             puzzle = PuzzleTest(base)
-            solution = solve(puzzle, True)
-            assert puzzle.unique_solutions == 1
-            assert puzzle.solution == solution
+            puzzle.solution = solve(puzzle, True)
+            assert validate_full_grid(puzzle) is True
 
     def test_count_solutions(self):
         """Test if recursive solver produces the right amount of solutions"""
