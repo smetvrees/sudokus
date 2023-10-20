@@ -23,7 +23,7 @@ def generate_puzzles(amount: int, base: int) -> List[Puzzle]:
 
 def generate_full_puzzle(base: int) -> List[List[int]]:
     """A funtion that with a given base (size of a box)
-     creates a filled board of size [base**2 x base**2]"""
+    creates a filled board of size [base**2 x base**2]"""
     # Based on https://stackoverflow.com/questions/45471152/how-to-create-a-sudoku-puzzle-in-python
     size = base * base
 

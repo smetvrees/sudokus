@@ -2,12 +2,13 @@
 import unittest
 
 from lib.generate_puzzle import validate_full_grid
-from lib.recursive_solver import recursive_solve, solve, can_place
+from lib.recursive_solver import can_place, recursive_solve, solve
 from tests.puzzles import PuzzleTest
 
 
 class TestRecursiveSolver(unittest.TestCase):
     """Test class for recursive solve"""
+
     def test_can_place(self):
         """Test if can_place returns booleans properly"""
         puzzle = PuzzleTest(3)

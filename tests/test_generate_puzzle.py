@@ -1,17 +1,13 @@
 """Module that tests the puzzle generation"""
 import unittest
 
-from lib.generate_puzzle import (
-    Puzzle,
-    generate_full_puzzle,
-    validate_full_grid,
-    empty_board,
-    generate_puzzles,
-)
+from lib.generate_puzzle import (Puzzle, empty_board, generate_full_puzzle,
+                                 generate_puzzles, validate_full_grid)
 
 
 class TestGeneratePuzzle(unittest.TestCase):
     """Main test class for puzzle generation"""
+
     def test_generate_full_board(self):
         """Test if shape is correct"""
         for i in [2, 3, 4, 5]:
