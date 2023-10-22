@@ -1,6 +1,7 @@
 """Testing module for superposition solve"""
 import unittest
 from copy import deepcopy
+
 from lib.generate_puzzle import validate_full_grid
 from lib.superposition_solve import (binary_to_indices, can_place,
                                      recursive_solve, update_board)
@@ -9,6 +10,7 @@ from tests.puzzles import PuzzleTest
 
 class TestSuperPosition(unittest.TestCase):
     """Test class for testing the superposition solve"""
+
     def test_binary_to_indices(self):
         """Test if binary to indices is working properly"""
         assert binary_to_indices(13) == [1, 3, 4]
@@ -59,11 +61,12 @@ class TestSuperPosition(unittest.TestCase):
             for j, item in enumerate(row):
                 if item != 0:
                     update_board(binaries, i, j, item, base)
+        puzzle.binaries = binaries
 
-        assert can_place(puzzle.board, binaries, 0, 0, 2, 2) is False
-        assert can_place(puzzle.board, binaries, 0, 1, 4, 2) is True
-        assert can_place(puzzle.board, binaries, 3, 0, 4, 2) is True
-        assert can_place(puzzle.board, binaries, 1, 2, 2, 2) is False
+        assert can_place(puzzle, 0, 0, 2) is False
+        assert can_place(puzzle, 0, 1, 4) is True
+        assert can_place(puzzle, 3, 0, 4) is True
+        assert can_place(puzzle, 1, 2, 2) is False
 
     def test_solve_superposition(self):
         """Test if the solve returns a valid solution"""
@@ -73,14 +76,16 @@ class TestSuperPosition(unittest.TestCase):
             # Set up the board and update binaries
             base_bin = [int("1" * (base**2), 2)]
             binaries = [base_bin * (base**2) for _ in range((base**2))]
+            puzzle.binaries = binaries
+
             solve_puzzle = deepcopy(puzzle.board)
 
             for i, row in enumerate(solve_puzzle):
                 for j, item in enumerate(row):
                     if item != 0:
-                        update_board(binaries, i, j, item, base)
+                        update_board(binaries, i, j, item, base_size=base)
 
             # Setup the recursion
-            recursive_solve(puzzle.board, binaries, base)
+            recursive_solve(puzzle)
 
             assert validate_full_grid(puzzle) is True

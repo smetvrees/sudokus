@@ -7,9 +7,11 @@ class Puzzle:
     solution = None
     board = None
     unique_solutions = None
+    binaries = None
 
     def __init__(self, base_size):
         self.base_size = base_size
+        self.size = base_size**2
 
     def return_information(self) -> dict:
         """Return information about this puzzle"""

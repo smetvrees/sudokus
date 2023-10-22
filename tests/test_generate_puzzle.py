@@ -27,7 +27,7 @@ class TestGeneratePuzzle(unittest.TestCase):
         for i in [2, 3, 4]:
             puzzle = Puzzle(i)
             puzzle.solution = generate_full_puzzle(i)
-            puzzle.board = empty_board(puzzle)
+            puzzle = empty_board(puzzle)
             assert puzzle.solution is not None
             assert puzzle.board is not None
 
