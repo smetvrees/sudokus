@@ -7,6 +7,8 @@ from typing import Union
 
 import numpy as np
 
+from lib.puzzle import Puzzle
+
 
 # Binary functions
 def get_amount_of_ones(binary: Union[int, str]):
@@ -30,9 +32,9 @@ def binary_to_indices(binary: Union[int, str], reverse: bool = True):
 
 
 # Superposition functions
-def update_board(binaries, row: int, col: int, number: int, base_size: int):
+def update_board(binaries: [int], row: int, col: int, number: int, base_size: int):
     """Update the superpositions of the grid, when a number on [rol, col] is added
-    :param binaries: List of Lists with binary representation of options
+    :param binaries: List of ints with binary representation of options
     :param row: The index of the row where the number is changed
     :param col: The index of the column where the number is changed
     :param number: The value of the number in the changed cell
@@ -42,7 +44,7 @@ def update_board(binaries, row: int, col: int, number: int, base_size: int):
     binary = list("0" * (base_size**2))
     binary[base_size**2 - number] = "1"
     out = int("".join(binary), 2)
-
+    print(binaries)
     # Update columns and rows
     for _i in range(base_size**2):
         binaries[row][_i] &= ~out
@@ -59,14 +61,14 @@ def update_board(binaries, row: int, col: int, number: int, base_size: int):
     binaries[row][col] = int("0", 2)
 
 
-def can_place(grid, binaries, row, col, guess, base):
+def can_place(puzzle: Puzzle, row: int, col: int, guess: int):
     """This function returns a boolean based on the guess if the board would be unsolveable after"""
     # Save a copy of the grid, to make changes and see if it can be solved
-    temp_grid = deepcopy(grid)
-    temp_bin = deepcopy(binaries)
+    temp_grid = deepcopy(puzzle.board)
+    temp_bin = deepcopy(puzzle.binaries)
 
     temp_grid[row][col] = guess
-    update_board(temp_bin, row, col, guess, base)
+    update_board(temp_bin, row, col, guess, puzzle.base_size)
 
     # Check if along the line a logical problem arises ( value = 0 and bin choices = 0)
     is_zero = [1 if x.bit_length() == 0 else 0 for y in temp_bin for x in y]
@@ -78,37 +80,37 @@ def can_place(grid, binaries, row, col, guess, base):
     return True
 
 
-def recursive_solve(grid, binaries, base) -> bool:
+def recursive_solve(puzzle) -> bool:
     """Recursive solving function for superposition"""
     # Step 1 : Check if the solution has been found
-    if 0 not in [x for sl in grid for x in sl]:
+    if 0 not in [x for sl in puzzle.board for x in sl]:
         return True
 
     # Step 2 : Make a guess, based on lowest option count
-    flattened_binaries = [x for y in binaries for x in y]
+    flattened_binaries = [x for y in puzzle.binaries for x in y]
     index_lowest = np.argmin(
         [get_amount_of_ones(x) if x != 0 else float("inf") for x in flattened_binaries]
     )
     guess = random.choice(binary_to_indices(flattened_binaries[index_lowest]))
-    row = int(index_lowest / (base**2))
-    col = index_lowest % (base**2)
+    row = int(index_lowest / (puzzle.base_size**2))
+    col = index_lowest % (puzzle.base_size**2)
 
     # Step 3 : Save current states to reset to if needed
-    save_binaries = deepcopy(binaries)
-    save_grid = deepcopy(grid)
+    save_binaries = deepcopy(puzzle.binaries)
+    save_grid = deepcopy(puzzle.board)
 
     # Step 4 : Check if the number can be placed
-    if can_place(grid, binaries, row, col, guess, base):
+    if can_place(puzzle, row, col, guess):
         # Step 5 : Update the board
-        update_board(binaries, row, col, guess, base)
-        grid[row][col] = guess
+        update_board(puzzle.binaries, row, col, guess, puzzle.base_size)
+        puzzle.board[row][col] = guess
 
         # Step 6 : Reiterate
-        if recursive_solve(grid, binaries, base):
+        if recursive_solve(puzzle):
             return True
     else:
         # Step 7 : Reset the grid and binaries
-        grid = save_grid
-        binaries = save_binaries
+        puzzle.board = save_grid
+        puzzle.binaries = save_binaries
 
     return False

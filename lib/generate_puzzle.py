@@ -44,27 +44,25 @@ def generate_full_puzzle(base: int) -> List[List[int]]:
     return grid
 
 
-def empty_board(puzzle: Puzzle) -> List[List[int]]:
+def empty_board(puzzle: Puzzle) -> Puzzle:
     """Function that will randomly pick values in a board and continues until no solution"""
-    grid = deepcopy(puzzle.solution)
+    puzzle.board = deepcopy(puzzle.solution)
     size = puzzle.base_size**2
 
     # Start looping
     while True:
         test_count = [0]
-        recursive_solve(
-            deepcopy(grid), row=0, column=0, size=size, solution_count=test_count
-        )
+        recursive_solve(puzzle, row=0, column=0, solution_count=test_count)
 
         if test_count[0] != 1:
             break
 
         x = random.randint(0, size - 1)
         y = random.randint(0, size - 1)
-        if grid[x][y] != 0:
-            grid[x][y] = 0
+        if puzzle.board[x][y] != 0:
+            puzzle.board[x][y] = 0
 
-    return grid
+    return puzzle
 
 
 def validate_full_grid(puzzle: Puzzle) -> bool:
@@ -81,7 +79,7 @@ def validate_full_grid(puzzle: Puzzle) -> bool:
         if list(dict.fromkeys(column)) != column:
             return False
     # Unique box
-    for box_index in range(base * base):
+    for box_index in range(puzzle.size):
         box_row = (box_index // base) * base
         box_col = (box_index % base) * base
         box_numbers = []
@@ -92,9 +90,3 @@ def validate_full_grid(puzzle: Puzzle) -> bool:
             return False
 
     return True
-
-
-if __name__ == "__main__":
-    puzzles = generate_puzzles(amount=1, base=2)
-    # print(puzzles[0].solution)
-    # print(puzzles[0].board)
